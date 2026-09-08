@@ -1,0 +1,5 @@
+# Local tooling, not part of the published site
+.claude/
+.agents/
+.impeccable/
+skills-lock.json
