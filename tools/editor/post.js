@@ -113,6 +113,21 @@
     });
   }
 
+  /* whatever the import could not determine, said once, where the writing happens */
+  function showImportWarnings() {
+    var msg = null;
+    try {
+      msg = sessionStorage.getItem('addWarnings');
+      sessionStorage.removeItem('addWarnings');
+    } catch (e) { return; }
+    if (!msg) return;
+    var bar = document.createElement('p');
+    bar.className = 'warnbar';
+    bar.textContent = msg;
+    var head = document.querySelector('.col-form .head');
+    head.parentNode.insertBefore(bar, head.nextSibling);
+  }
+
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>]/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c];
@@ -143,6 +158,7 @@
       .then(function (data) {
         loaded = data;
         document.getElementById('pfile').textContent = dir + data.slug + '.md';
+        showImportWarnings();
         fillMeta(data.meta);
         fillAssets(data.meta.assets);
 

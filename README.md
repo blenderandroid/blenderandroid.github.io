@@ -20,45 +20,48 @@ git clone https://github.com/blenderandroid/blenderandroid.github.io
 cd blenderandroid.github.io
 ```
 
-### Publishing a release
-
-Adding a post is a script; writing it is the editor.
+### Everything, from the editor
 
 ```bash
-python tools/build.py import https://github.com/simfeo/blender/releases/tag/android-alpha-4
-python tools/edit.py                       # open http://127.0.0.1:8000/admin/
-# fix the title and summary, edit the body, save
+python tools/edit.py            # open http://127.0.0.1:8000/admin/
+```
+
+Then, in the browser:
+
+- **Publishing a release.** Add post, paste the GitHub release URL, Add and
+  open. The tag, date, file sizes, download links and any published checksum
+  are read from the release, so nothing is retyped. Fix the title and summary,
+  edit the body, save.
+- **Posting an announcement.** Add post, Announcement tab, give it a title,
+  write it, save.
+- **Changing wording on the site.** Landing page, edit the fields, save.
+- **Removing a post or page.** Hover its row, Delete, confirm.
+
+Then commit and push:
+
+```bash
 git add -A && git commit -m "Add alpha 4" && git push
 ```
 
-`import` reads the release through the GitHub API **once, on your machine**, and
-writes the facts into a markdown file. The published site is plain static HTML
-and never calls the API. Nothing about a release is typed twice, and download
-links cannot go stale.
+Git stays manual on purpose. Editing is local and reversible; publishing to a
+public site is not, so a person reads the diff before it goes out.
 
-### Posting an announcement
-
-```bash
-python tools/build.py new --title "Calling for Mali testers"
-python tools/edit.py                       # write it, save
-git add -A && git commit -m "Announce the Mali test call" && git push
-```
-
-### Changing wording on the site
-
-No script at all. Start the editor, edit, save, commit.
-
-```bash
-python tools/edit.py
-```
+The release import talks to the GitHub API **once, on your machine, at edit
+time**. The published site is plain static HTML and never calls it. Nothing
+about a release is written in two places, and download links cannot go stale.
 
 ### Which tool
 
 | Tool | Use it for |
 |---|---|
-| `tools/edit.py` | Editing anything. Serves the editor **and** the site, and rebuilds on save. This is the one to run day to day. |
-| `tools/build.py` | Adding a post, and regenerating the site from the command line. |
-| `tools/serve.py` | Previewing without the editor, for example while hand-editing CSS. `edit.py` already serves the site, so you rarely need both. |
+| `tools/edit.py` | Everything, day to day. Adding, writing, editing and deleting, with the site served beside it and rebuilt on save. |
+| `tools/build.py` | The escape hatch. Regenerating the site headlessly, in CI, or when the editor itself is broken. Also the library the editor runs on. |
+| `tools/serve.py` | Previewing without the editor, for example while hand-editing CSS. |
+
+`build.py` is not a competing tool: `edit.py` imports it and calls it on every
+save, so there is one generator, not two. Its command line stays because a
+system that can only be driven through its own interface has no way back when
+that interface is the thing that broke, and because CI has no browser.
 
 `tools/blocks.py` and `tools/yamledit.py` are libraries used by the editor. You
 never run them directly.
@@ -100,8 +103,9 @@ you removed, so the output never drifts from the content.
 
 ### `python tools/build.py import <url>`
 
-Pulls a GitHub release into `content/updates/`. Accepts a release URL, or a
-repository URL to take its latest release:
+The command-line form of the editor's Add post. Pulls a GitHub release into
+`content/updates/`. Accepts a release URL, or a repository URL to take its
+latest release:
 
 ```bash
 python tools/build.py import https://github.com/simfeo/blender/releases/tag/android-alpha-4
@@ -123,7 +127,8 @@ Set `GITHUB_TOKEN` in the environment if you hit the anonymous rate limit.
 
 ### `python tools/build.py new`
 
-Scaffolds a post by hand, with no network access at all.
+Scaffolds a post by hand, with no network access at all. The editor's Add post
+button does the same thing, so reach for this only when scripting.
 
 ```bash
 # a release, when you would rather not use import
@@ -161,13 +166,24 @@ python tools/edit.py            # editor at /admin/, site at /
 python tools/edit.py -p 8777    # another port
 ```
 
-It has three areas, each with a live preview of the real page beside it:
+It has three areas. Posts and Pages carry a live preview of the real page beside
+the form.
 
-| Area | What it edits |
+| Area | What it does |
 |---|---|
-| **Posts** | Title, summary, date, tag, the body, and the download rows |
+| **Posts** | Add from a release URL or as an announcement, edit title, summary, date, tag, body and download rows, delete |
 | **Landing page** | Every string on the front page, as a form |
-| **Pages** | Standalone pages such as About |
+| **Pages** | Add, edit and delete standalone pages such as About |
+
+**Adding a post.** Press Add post. *From a release* takes a GitHub release URL
+and fills everything it can read from it. *Announcement* takes only a title.
+Either way you land straight in the editor, because a new post always needs
+writing. If the release published no checksum, the editor says so at the top
+rather than leaving you to notice.
+
+**Deleting.** Hover a row and press Delete. The confirm names the post, and the
+markdown file is removed and its page pruned on the next build. Nothing is
+pushed, so `git checkout .` brings it back until you commit.
 
 The body uses a block editor: press the plus button for headings, lists,
 quotes, code, tables, images and YouTube embeds, or select text for bold,

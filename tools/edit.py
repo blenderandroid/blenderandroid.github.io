@@ -349,14 +349,19 @@ def dashboard_html():
     rows = []
     for p in list_posts():
         rows.append("""
-      <a class="row" href="/admin/post/%(slug)s">
-        <div class="row-main">
-          <div class="row-title">%(title)s</div>
-          <div class="row-meta"><span class="chip %(cls)s">%(track)s</span>
-            <span>%(date)s</span>%(tag)s%(assets)s</div>
-        </div>
-        <div class="row-go">Edit</div>
-      </a>""" % {
+      <div class="row">
+        <a class="row-hit" href="/admin/post/%(slug)s">
+          <div class="row-main">
+            <div class="row-title">%(title)s</div>
+            <div class="row-meta"><span class="chip %(cls)s">%(track)s</span>
+              <span>%(date)s</span>%(tag)s%(assets)s</div>
+          </div>
+          <div class="row-go">Edit</div>
+        </a>
+        <button class="del" data-kind="post" data-slug="%(slug)s"
+          data-title="%(title)s" title="Delete this post"
+          aria-label="Delete this post">Delete</button>
+      </div>""" % {
             "slug": p["slug"],
             "title": build._esc(p["title"] or "(untitled)"),
             "cls": {"main": "up", "s24": "dn"}.get(p["track"], "nw"),
@@ -366,33 +371,90 @@ def dashboard_html():
             "assets": ('<span>%d file%s</span>' % (p["assets"], "" if p["assets"] == 1 else "s"))
                       if p["assets"] else "",
         })
+    tracks = build.load_site().get("tracks", {})
+    opts = "".join('<option value="%s">%s</option>' % (build._esc(tid),
+                                                       build._esc(t.get("name", tid)))
+                   for tid, t in tracks.items())
     body = """
 %s
 <main class="wrap">
-  <div class="head">
-    <h1>Porting log</h1>
-    <p>Edit an existing post. To add one, use the script:
-      <code>python tools/build.py import &lt;release url&gt;</code> for a release, or
-      <code>python tools/build.py new --title "..."</code> for an announcement.</p>
+  <div class="head row-head">
+    <div>
+      <h1>Porting log</h1>
+      <p>Everything published on the site, newest first.</p>
+    </div>
+    <button id="addbtn" class="primary">Add post</button>
   </div>
   <div class="rows">%s</div>
-</main>""" % (topbar("posts"), "".join(rows))
-    return page("Posts", body)
+</main>
+
+<dialog id="adddlg">
+  <form method="dialog" class="dlg">
+    <h2>Add a post</h2>
+    <div class="tabs">
+      <button type="button" class="tab on" data-mode="import">From a release</button>
+      <button type="button" class="tab" data-mode="new">Announcement</button>
+    </div>
+
+    <div class="pane" data-pane="import">
+      <p class="note">Paste a GitHub release URL. The tag, date, file sizes,
+        download links and any published checksum are read from it, so nothing
+        is retyped.</p>
+      <div class="field"><label for="a_url">Release URL</label>
+        <input id="a_url" placeholder="https://github.com/owner/repo/releases/tag/..."></div>
+      <div class="field"><label for="a_track">Build <span class="sub">detected from the repository unless you pick one</span></label>
+        <select id="a_track"><option value="">Detect automatically</option>%s</select></div>
+    </div>
+
+    <div class="pane" data-pane="new" hidden>
+      <p class="note">An announcement has no release behind it: no tag, no
+        downloads, no link to GitHub.</p>
+      <div class="field"><label for="a_title">Title</label>
+        <input id="a_title" placeholder="Calling for Mali testers"></div>
+    </div>
+
+    <p class="dlg-err" id="adderr" hidden></p>
+    <div class="dlg-foot">
+      <button type="button" class="ghost" id="addcancel">Cancel</button>
+      <button type="button" class="primary" id="addgo">Add and open</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="deldlg">
+  <form method="dialog" class="dlg">
+    <h2>Delete this post?</h2>
+    <p class="note" id="delwhat"></p>
+    <p class="note">The markdown file is removed and its page disappears from the
+      site on the next build. Nothing is pushed, so <code>git checkout .</code>
+      brings it back until you commit.</p>
+    <div class="dlg-foot">
+      <button type="button" class="ghost" id="delcancel">Cancel</button>
+      <button type="button" class="danger" id="delgo">Delete</button>
+    </div>
+  </form>
+</dialog>
+""" % (topbar("posts"), "".join(rows), opts)
+    return page("Posts", body, '<script src="/admin/static/dashboard.js"></script>')
 
 
 def pages_html():
     rows = []
     for pg in list_pages():
         rows.append("""
-      <a class="row" href="/admin/page/%(slug)s">
-        <div class="row-main">
-          <div class="row-title">%(title)s</div>
-          <div class="row-meta"><span class="mono">%(url)s</span>
-            <span>menu: %(nav)s</span></div>
-        </div>
-        <div class="row-go">Edit</div>
-      </a>""" % {"slug": pg["slug"], "title": build._esc(pg["title"]),
-                 "url": build._esc(pg["url"]), "nav": build._esc(pg["nav"])})
+      <div class="row">
+        <a class="row-hit" href="/admin/page/%(slug)s">
+          <div class="row-main">
+            <div class="row-title">%(title)s</div>
+            <div class="row-meta"><span class="mono">%(url)s</span>
+              <span>menu: %(nav)s</span></div>
+          </div>
+          <div class="row-go">Edit</div>
+        </a>
+        <button class="del" data-kind="page" data-slug="%(slug)s"
+          data-title="%(title)s" aria-label="Delete this page">Delete</button>
+      </div>""" % {"slug": pg["slug"], "title": build._esc(pg["title"]),
+                   "url": build._esc(pg["url"]), "nav": build._esc(pg["nav"])})
     if not rows:
         rows.append('<div class="row"><div class="row-main">No pages yet.</div></div>')
     body = """
@@ -405,8 +467,23 @@ def pages_html():
       header menu.</p>
   </div>
   <div class="rows">%s</div>
-</main>""" % (topbar("pages"), "".join(rows))
-    return page("Pages", body)
+</main>
+
+<dialog id="deldlg">
+  <form method="dialog" class="dlg">
+    <h2>Delete this page?</h2>
+    <p class="note" id="delwhat"></p>
+    <p class="note">The markdown file is removed, and the page disappears from
+      the site, the header menu and the footer on the next build. Nothing is
+      pushed, so <code>git checkout .</code> brings it back until you commit.</p>
+    <div class="dlg-foot">
+      <button type="button" class="ghost" id="delcancel">Cancel</button>
+      <button type="button" class="danger" id="delgo">Delete</button>
+    </div>
+  </form>
+</dialog>
+""" % (topbar("pages"), "".join(rows))
+    return page("Pages", body, '<script src="/admin/static/dashboard.js"></script>')
 
 
 def site_html():
@@ -624,6 +701,43 @@ class Handler(http.server.SimpleHTTPRequestHandler):
                     write_doc(kind, slug, payload.get("meta") or {},
                               payload.get("blocks") or [])
                     return self._json({"ok": True, "ms": rebuild()})
+
+            if p == "/admin/api/create":
+                payload = json.loads(self._body() or b"{}")
+                mode = payload.get("mode")
+                try:
+                    if mode == "import":
+                        _path, slug, warnings = build.import_release(
+                            payload.get("url", ""), payload.get("track", ""),
+                            quiet=True)
+                    elif mode == "new":
+                        title = (payload.get("title") or "").strip()
+                        if not title:
+                            raise build.ContentError("Give the announcement a title.")
+                        _path, slug = build.new_post(
+                            track=payload.get("track", ""), title=title)
+                        warnings = []
+                    else:
+                        raise build.ContentError("Unknown create mode.")
+                except build.ContentError as exc:
+                    return self._json({"error": str(exc)}, 400)
+                return self._json({"ok": True, "slug": slug, "warnings": warnings,
+                                   "ms": rebuild()})
+
+            if p == "/admin/api/delete":
+                payload = json.loads(self._body() or b"{}")
+                kind = payload.get("kind")
+                slug = payload.get("slug") or ""
+                if kind not in DIRS:
+                    return self._json({"error": "unknown kind"}, 400)
+                try:
+                    target = doc_path(kind, slug)
+                except ValueError:
+                    return self._json({"error": "bad slug"}, 400)
+                if not os.path.isfile(target):
+                    return self._json({"error": "no such %s" % kind}, 404)
+                os.remove(target)
+                return self._json({"ok": True, "ms": rebuild()})
 
             if p == "/admin/api/upload":
                 return self._upload()
