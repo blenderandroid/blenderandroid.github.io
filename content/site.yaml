@@ -1,0 +1,103 @@
+# Site-wide facts. Everything here is hand-edited.
+# Per-release facts live in content/updates/*.md instead.
+
+title: Blender on Android
+description: "Two unofficial, experimental builds of Blender 5.3 Alpha for Android. Not affiliated with the Blender Foundation. arm64, Android 12 or newer, Vulkan required."
+url: https://blenderandroid.github.io
+
+standfirst: "5.3.0 Alpha - unofficial community port - experimental"
+disclaimer: Not affiliated with or endorsed by the Blender Foundation
+licence: Blender is released under the GNU GPL
+
+feed_on_home: 3
+
+# Post kinds that are not release tracks. Used for announcements.
+kinds:
+  news:
+    name: Announcement
+
+device_lede: >
+  There is no OpenGL fallback and no 32-bit build. All three have to be true
+  before a large download is worth starting. Check them against your own phone.
+
+builds_lede: >
+  The second is a fork of the first. They make opposite trades, and neither is
+  the better one. Pick the trade that matches your device.
+
+download_lede: >
+  Start with Lite unless you specifically need Cycles, video or the exchange
+  formats. It is the one to use on mid-range hardware.
+
+updates_lede: >
+  What changed, why it was broken, and what is still known to be wrong.
+  Written as the work happens.
+
+signing_fingerprint: f8b590dac5a14b530936d8b68be05a77e60bb0a2e652d9d8d079d9c93cc0cc3b
+
+alpha_note: >
+  This is an alpha. Back up your work. Auto-save now functions, so after an
+  unexpected close use File, then Recover, then Auto Save.
+
+requirements:
+  - id: arm
+    label: Architecture
+    value: arm64 only
+    check: arm64-v8a
+    detail: "A 64-bit ARM device. Every phone and tablet sold in the last several years qualifies; 32-bit and x86 devices do not."
+  - id: os
+    label: Android
+    value: 12 or newer
+    check: Android 12 / API 31
+    detail: "Or newer. Settings, then About phone, then Android version. Older releases will refuse to install."
+  - id: vk
+    label: Graphics
+    value: "Vulkan, no fallback"
+    check: A Vulkan driver
+    detail: "Adreno, Mali and Xclipse all work as of alpha 3. There is no OpenGL path, so a device without Vulkan cannot start the app at all."
+
+install_steps:
+  - title: Allow the install
+    text: "These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager."
+  - title: Check the certificate
+    text: "The upstream APKs are signed by the author. Alpha 3 uses the same key as alpha 2, so it installs over it as an update and keeps your preferences."
+  - title: Wait out the first launch
+    text: "Around 100 MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen."
+
+tracks:
+  main:
+    name: Wide support
+    repo: simfeo/blender
+    repo_url: https://github.com/simfeo/blender
+    releases_url: https://github.com/simfeo/blender/releases
+    lede: >
+      The upstream port. Optimises for stability and for running on as many
+      devices as possible, and ships in two sizes so weaker hardware is not
+      left out.
+    points:
+      - lead: ARM Mali devices now run.
+        text: Three GPU features Blender required and mostly never used were dropped in alpha 3.
+      - lead: Full and Lite.
+        text: Lite drops Cycles, video and the exchange formats for devices that cannot carry them.
+      - lead: A startup log you can send.
+        text: Written even when the app closes immediately, so a failure leaves something behind.
+      - lead: ""
+        text: Tested on Galaxy Tab S7 FE, Galaxy S22 Ultra and a Mali-G57 MC2.
+  s24:
+    name: Everything on
+    repo: Wanderson-Magalhaes/blender_for_android
+    repo_url: https://github.com/Wanderson-Magalhaes/blender_for_android
+    releases_url: https://github.com/Wanderson-Magalhaes/blender_for_android/releases
+    lede: >
+      A fork of the upstream port that enables as much as it can and tunes the
+      touch interface for one device. Developed and tested on a Galaxy S24
+      Ultra only.
+    points:
+      - lead: Native audio.
+        text: Timeline audio, sound strips and speaker objects play through the phone or headphones.
+      - lead: Tool variants on long press.
+        text: Hold a tool to reach Select Box, Circle, Lasso and the rest of its group.
+      - lead: Phone-sized chrome.
+        text: Menus, headers, toolbars and the properties column are enlarged for fingers.
+      - lead: ""
+        text: Not validated on any other device, chipset, Android version or GPU driver.
+        warn: true

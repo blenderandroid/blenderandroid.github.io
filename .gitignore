@@ -3,3 +3,7 @@
 .agents/
 .impeccable/
 skills-lock.json
+
+# Python
+__pycache__/
+*.pyc

@@ -3,283 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Blender on Android - unofficial community port</title>
+<title>Blender on Android</title>
 <meta name="description" content="Two unofficial, experimental builds of Blender 5.3 Alpha for Android. Not affiliated with the Blender Foundation. arm64, Android 12 or newer, Vulkan required.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-:root{
-  --void:#0b0d1a;
-  --ink:#13162b;
-  --night:#1a1d3a;
-  --lilac:#6a6cf6;
-  --mist:#bfd2ff;
-  --ember:#ff6a3d;
-
-  --text:#dfe8ff;
-  --text-dim:#8f9dc4;
-  --text-faint:#7d89b2;
-  --rule:#242844;
-  --rule-soft:#1b1f38;
-
-  --display:"Archivo","Archivo Narrow",system-ui,sans-serif;
-  --mono:"Martian Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
-
-  --gut:clamp(20px,4.5vw,64px);
-  --maxw:1440px;
-  --label:600 11px/1.1 var(--mono);
-  --track:0.22em;
-}
-
-*{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%}
-body{
-  margin:0;
-  background:var(--void);
-  color:var(--text);
-  font-family:var(--display);
-  font-variation-settings:"wdth" 100,"wght" 400;
-  font-size:17px;
-  line-height:1.65;
-  overflow-x:hidden;
-  text-rendering:optimizeLegibility;
-}
-
-/* browser surfaces, themed from the palette */
-::selection{background:var(--ember);color:var(--void)}
-::-moz-selection{background:var(--ember);color:var(--void)}
-html{scrollbar-color:var(--rule) var(--void);scrollbar-width:thin}
-::-webkit-scrollbar{width:11px;height:11px}
-::-webkit-scrollbar-track{background:var(--void)}
-::-webkit-scrollbar-thumb{background:var(--rule);border:3px solid var(--void)}
-::-webkit-scrollbar-thumb:hover{background:var(--lilac)}
-:focus-visible{outline:2px solid var(--ember);outline-offset:3px}
-a{color:inherit}
-
-.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--gut)}
-
-/* ───────────── chrome ───────────── */
-.chrome{
-  position:fixed;top:0;left:0;right:0;z-index:60;
-  display:flex;align-items:center;justify-content:space-between;gap:16px;
-  padding:14px var(--gut);
-  font:var(--label);letter-spacing:var(--track);text-transform:uppercase;
-  color:var(--text-dim);
-  border-bottom:1px solid var(--rule-soft);
-  background:color-mix(in srgb,var(--void) 82%,transparent);
-  backdrop-filter:blur(14px) saturate(140%);
-}
-.mark{display:flex;align-items:center;gap:10px;color:var(--text);text-decoration:none}
-.mark svg{display:block;flex:none}
-.mark b{font-weight:600;letter-spacing:var(--track);white-space:nowrap}
-/* on a phone the headline says the name a moment later, so the bar keeps the disclaimer at a legible size instead */
-@media(max-width:520px){
-  .chrome{padding-left:16px;padding-right:16px}
-  .mark b{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .flag{font-size:11px;letter-spacing:.13em}
-}
-.mark span{color:var(--text-faint)}
-.flag{display:flex;align-items:center;gap:8px;color:var(--ember);white-space:nowrap}
-.flag::before{content:"";width:6px;height:6px;background:var(--ember);flex:none}
-.flag i{font-style:normal;color:var(--text-dim);text-transform:none;letter-spacing:.02em;font-family:var(--display);font-size:12.5px}
-@media(max-width:1040px){.flag i{display:none}}
-
-/* ───────────── hero ───────────── */
-.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;isolation:isolate;padding-top:clamp(84px,12vh,120px);padding-bottom:clamp(28px,5vh,64px)}
-.field{position:absolute;inset:0;z-index:-2;overflow:hidden;background:
-  radial-gradient(120% 90% at 88% 84%,rgba(255,106,61,.30),transparent 55%),
-  radial-gradient(90% 70% at 62% 42%,rgba(106,108,246,.26),transparent 62%),
-  radial-gradient(140% 120% at 8% 8%,#0d1024 12%,transparent 70%),
-  linear-gradient(150deg,var(--void) 26%,#151935 66%,#0a0c18 100%);}
-.field canvas{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;transition:opacity 1.4s cubic-bezier(.16,1,.3,1)}
-.field.on canvas{opacity:1}
-.field::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,var(--void) 1%,rgba(11,13,26,.72) 22%,rgba(11,13,26,.18) 52%,transparent 76%)}
-
-.hero-grid{position:relative}
-@media(min-width:901px){.hero-grid{padding-left:126px}}
-
-/* left index, held on the margin */
-.index{position:absolute;left:0;top:50%;transform:translateY(-50%);list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:26px;font:var(--label);letter-spacing:var(--track);text-transform:uppercase}
-.index a{display:block;text-decoration:none;color:var(--text-faint);transition:color .3s}
-.index a:hover{color:var(--text)}
-.index em{display:block;font-style:normal;color:var(--text-dim);font-size:11px;margin-bottom:5px}
-.index a:hover em{color:var(--ember)}
-@media(max-width:900px){.index{display:none}}
-
-.headline{
-  font-family:var(--display);
-  font-variation-settings:"wdth" 74,"wght" 800;
-  font-size:clamp(3.4rem,min(13.5vw,18vh),11.5rem);
-  line-height:.85;
-  letter-spacing:-0.035em;
-  text-transform:uppercase;
-  word-spacing:.08em;
-  margin:0 0 clamp(18px,2.4vh,28px);
-  color:#eef3ff;
-  text-wrap:balance;
-}
-.headline .thin{font-variation-settings:"wdth" 74,"wght" 200;color:var(--mist)}
-
-.standfirst{
-  font:500 clamp(11px,1.15vw,12px)/1.7 var(--mono);
-  letter-spacing:.14em;text-transform:uppercase;color:var(--text-dim);
-  margin:0 0 clamp(22px,3.2vh,34px);max-width:62ch;
-}
-/* the disclaimer is the most important sentence here, so it is set to be read, not decoded */
-.standfirst b{
-  display:inline-block;margin-top:9px;
-  font:600 clamp(14px,1.5vw,16.5px)/1.45 var(--display);
-  font-variation-settings:"wdth" 100,"wght" 600;
-  letter-spacing:0;text-transform:none;color:var(--ember);
-}
-
-.actions{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:clamp(26px,4.5vh,52px)}
-.btn{
-  --bg:transparent;--bd:var(--rule);--fg:var(--text);
-  position:relative;display:inline-flex;align-items:center;gap:14px;
-  padding:15px 22px;border:1px solid var(--bd);background:var(--bg);color:var(--fg);
-  font:600 11px/1 var(--mono);letter-spacing:var(--track);text-transform:uppercase;
-  text-decoration:none;cursor:pointer;overflow:hidden;
-  transition:color .35s,border-color .35s,background-color .35s;
-}
-.btn svg{flex:none;transition:transform .45s cubic-bezier(.16,1,.3,1)}
-.btn::before{content:"";position:absolute;inset:0;background:var(--ember);transform:scaleY(0);transform-origin:bottom;transition:transform .45s cubic-bezier(.16,1,.3,1);z-index:-1}
-.btn:hover,.btn:focus-visible{--bd:var(--ember);--fg:var(--void);border-color:var(--ember);color:var(--void)}
-.btn:hover::before,.btn:focus-visible::before{transform:scaleY(1)}
-.btn:hover svg{transform:translateX(5px)}
-.btn--primary{--bd:var(--ember);--fg:var(--ember)}
-
-/* device readout in hero */
-.readout{display:flex;flex-wrap:wrap;gap:0;border-top:1px solid var(--rule);max-width:760px}
-.readout div{flex:1 1 150px;padding:14px 18px 0 0;font:var(--label);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-faint)}
-.readout b{display:block;font:600 15px/1.3 var(--mono);letter-spacing:.06em;color:var(--text);margin-top:6px}
-
-/* short landscape viewports: keep the action above the fold */
-@media(max-height:620px) and (min-width:721px){
-  .headline{font-size:clamp(2.6rem,15vh,6rem)}
-  .standfirst{font-size:11px;margin-bottom:18px}
-  .actions{margin-bottom:22px}
-  .readout div{padding-top:10px}
-  .readout b{font-size:13px}
-}
-.scrollcue{position:absolute;right:var(--gut);bottom:clamp(28px,5vh,64px);display:flex;flex-direction:column;align-items:center;gap:10px;font:var(--label);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-faint);writing-mode:vertical-rl}
-.scrollcue::after{content:"";width:1px;height:64px;background:linear-gradient(var(--rule),transparent)}
-@media(max-width:900px){.scrollcue{display:none}}
-
-/* ───────────── sections ───────────── */
-section{padding:clamp(72px,11vh,148px) 0;border-top:1px solid var(--rule-soft)}
-.shead{display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-bottom:clamp(30px,5vh,58px)}
-h2{
-  font-variation-settings:"wdth" 80,"wght" 700;
-  font-size:clamp(2rem,5.2vw,4rem);line-height:.95;letter-spacing:-0.03em;
-  word-spacing:.10em;
-  text-transform:uppercase;margin:0;color:#eaf0ff;
-}
-.shead p{margin:0;max-width:46ch;color:var(--text-dim);font-size:15px;line-height:1.7}
-
-/* device check */
-.check{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft)}
-.check-item{background:var(--void);position:relative}
-.check-item input{position:absolute;opacity:0;width:0;height:0}
-.check-item label{display:flex;gap:16px;padding:26px 24px;cursor:pointer;height:100%;transition:background-color .35s}
-.check-item label:hover{background:var(--ink)}
-.box{flex:none;width:22px;height:22px;border:1px solid var(--rule);margin-top:2px;display:grid;place-items:center;transition:border-color .3s,background-color .3s}
-.box svg{opacity:0;transform:scale(.7);transition:opacity .3s,transform .35s cubic-bezier(.16,1,.3,1);color:var(--void)}
-.check-item .t{display:block;font:600 13px/1.3 var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--text);margin-bottom:10px}
-.check-item .d{display:block;font-size:14px;line-height:1.62;color:var(--text-dim);max-width:38ch}
-.check-item input:checked + label{background:var(--night)}
-.check-item input:checked + label .box{background:var(--ember);border-color:var(--ember)}
-.check-item input:checked + label .box svg{opacity:1;transform:scale(1)}
-.check-item input:focus-visible + label{outline:2px solid var(--ember);outline-offset:-2px}
-
-.verdict{margin-top:1px;border:1px solid var(--rule-soft);border-top:0;padding:24px;background:var(--void);display:flex;align-items:center;gap:16px;font:500 15px/1.6 var(--display);letter-spacing:0;color:var(--text-dim)}
-.verdict .ok{display:none;color:var(--ember)}
-.verdict .wait{display:block}
-.checks:has(#req-arm:checked):has(#req-os:checked):has(#req-vk:checked) .verdict .ok{display:block}
-.checks:has(#req-arm:checked):has(#req-os:checked):has(#req-vk:checked) .verdict .wait{display:none}
-.checks:has(#req-arm:checked):has(#req-os:checked):has(#req-vk:checked) .verdict{border-color:var(--ember)}
-
-/* builds */
-.tracks{display:grid;gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft)}
-@media(min-width:900px){.tracks{grid-template-columns:1fr 1fr}}
-.track{background:var(--void);padding:clamp(26px,3vw,42px);display:flex;flex-direction:column;transition:background-color .4s}
-.track:hover{background:var(--ink)}
-.track h3{font-variation-settings:"wdth" 78,"wght" 750;font-size:clamp(1.5rem,3vw,2.3rem);line-height:1;letter-spacing:-0.02em;word-spacing:.10em;text-transform:uppercase;margin:0 0 6px;color:#eaf0ff}
-.track .who{font:500 11px/1.5 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--lilac);margin-bottom:22px}
-.track .lede{margin:0 0 26px;color:var(--text-dim);font-size:15.5px;line-height:1.7;max-width:44ch}
-.track ul{list-style:none;margin:0 0 28px;padding:0;display:flex;flex-direction:column;gap:11px}
-.track li{display:flex;gap:12px;font-size:14.5px;line-height:1.55;color:var(--text-dim)}
-.track li svg{flex:none;margin-top:3px;color:var(--text-faint)}
-.track li b{color:var(--text);font-weight:600}
-.track .foot{margin-top:auto;padding-top:24px;border-top:1px solid var(--rule-soft);display:flex;flex-wrap:wrap;gap:22px}
-.stat{font:var(--label);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-faint)}
-.stat b{display:block;font:600 15px/1.3 var(--mono);letter-spacing:.05em;color:var(--text);margin-top:6px}
-
-/* files */
-.files{border:1px solid var(--rule-soft);border-bottom:0}
-.file{display:grid;grid-template-columns:1fr auto;gap:18px 24px;align-items:center;padding:24px;border-bottom:1px solid var(--rule-soft);transition:background-color .35s}
-.file:hover{background:var(--ink)}
-.file .nm{font:600 15px/1.35 var(--mono);letter-spacing:.04em;color:var(--text);word-break:break-all}
-.file .meta{margin-top:9px;display:flex;flex-wrap:wrap;gap:8px 20px;font:400 11.5px/1.5 var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--text-faint)}
-.file .meta b{color:var(--text-dim);font-weight:500}
-/* anywhere, not break-all: the hash has no spaces so it still wraps, but prose keeps its words */
-.hash{grid-column:1/-1;margin-top:4px;padding-top:14px;border-top:1px dashed var(--rule-soft);font:400 11.5px/1.7 var(--mono);letter-spacing:.02em;color:var(--text-faint);word-break:normal;overflow-wrap:anywhere}
-.hash b{color:var(--text-dim);font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-right:10px}
-.hash.none{font-family:var(--display);font-size:14px;letter-spacing:0;color:var(--text-faint)}
-.hash.none b{font-family:var(--mono);font-size:11.5px}
-@media(max-width:640px){.file{grid-template-columns:1fr}}
-
-.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:1px;background:var(--rule-soft);border:1px solid var(--rule-soft)}
-@media(min-width:820px){.steps{grid-template-columns:repeat(3,1fr)}}
-.steps li{counter-increment:s;background:var(--void);padding:28px 24px}
-.steps li::before{content:counter(s,decimal-leading-zero);display:block;font:600 11px/1 var(--mono);letter-spacing:var(--track);color:var(--ember);margin-bottom:16px}
-.steps h4{margin:0 0 9px;font:600 13.5px/1.35 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
-.steps p{margin:0;font-size:14.5px;line-height:1.65;color:var(--text-dim)}
-.steps code{font:400 13px/1 var(--mono);color:var(--mist);background:var(--night);padding:2px 6px}
-
-/* updates */
-.feed{display:flex;flex-direction:column}
-.entry{display:grid;grid-template-columns:170px 1fr;gap:clamp(18px,3vw,48px);padding:clamp(30px,4vh,48px) 0;border-top:1px solid var(--rule-soft)}
-.entry:first-child{border-top:0}
-.entry .when{font:500 11px/1.7 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--text-faint)}
-.entry .when b{display:block;color:var(--text-dim);font-weight:500}
-.entry .when .tag{display:inline-block;margin-top:12px;padding:4px 9px;border:1px solid var(--rule);color:var(--text-dim);letter-spacing:.12em}
-.entry .when .tag.up{border-color:rgba(106,108,246,.55);color:var(--lilac)}
-.entry .when .tag.dn{border-color:rgba(255,106,61,.5);color:var(--ember)}
-.entry h3{font-variation-settings:"wdth" 84,"wght" 700;font-size:clamp(1.3rem,2.6vw,1.95rem);line-height:1.08;letter-spacing:-0.02em;margin:0 0 14px;color:#eaf0ff;text-wrap:balance}
-.entry p{margin:0 0 15px;color:var(--text-dim);font-size:15.5px;line-height:1.72;max-width:68ch}
-.entry p:last-of-type{margin-bottom:22px}
-.entry strong{color:var(--text);font-weight:600}
-.entry .more{display:inline-flex;align-items:center;gap:10px;font:600 11px/1 var(--mono);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-dim);text-decoration:none;border-bottom:1px solid var(--rule);padding-bottom:7px;transition:color .3s,border-color .3s}
-.entry .more:hover{color:var(--ember);border-color:var(--ember)}
-.entry .more svg{transition:transform .4s cubic-bezier(.16,1,.3,1)}
-.entry .more:hover svg{transform:translateX(4px)}
-@media(max-width:720px){.entry{grid-template-columns:1fr;gap:14px}}
-
-/* notice */
-.notice{border:1px solid var(--rule);padding:clamp(24px,3vw,38px);display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:start;background:linear-gradient(120deg,var(--ink),var(--void) 70%)}
-.notice svg{color:var(--ember);flex:none}
-.notice h3{margin:0 0 12px;font:600 13px/1.3 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ember)}
-.notice p{margin:0 0 12px;color:var(--text-dim);font-size:15px;line-height:1.72;max-width:74ch}
-.notice p:last-child{margin:0}
-
-footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clamp(32px,4vh,52px)}
-.fgrid{display:flex;flex-wrap:wrap;gap:40px;justify-content:space-between;margin-bottom:48px}
-.fcol h4{margin:0 0 16px;font:var(--label);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-faint)}
-.fcol a{display:block;text-decoration:none;color:var(--text-dim);font:500 13.5px/2.1 var(--mono);letter-spacing:.05em;transition:color .3s}
-.fcol a:hover{color:var(--ember)}
-.fbot{padding-top:26px;border-top:1px solid var(--rule-soft);font:400 13.5px/1.8 var(--display);letter-spacing:0;color:var(--text-faint);display:flex;flex-wrap:wrap;gap:8px 30px;justify-content:space-between}
-
-/* content is visible by default; the reveal is layered on only once JS confirms it can undo it */
-.js-reveal .reveal{opacity:0;transform:translateY(22px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
-.js-reveal .reveal.in{opacity:1;transform:none}
-@media(prefers-reduced-motion:reduce){
-  *{animation:none!important;transition-duration:.01ms!important}
-  .reveal{opacity:1;transform:none}
-  .field canvas{display:none}
-}
-</style>
+<link rel="stylesheet" href="assets/site.css">
+<!-- generated by tools/build.py; edit content/ and rerun -->
 </head>
 <body>
 
@@ -288,8 +18,10 @@ footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clam
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2 21.5 7.5v9L12 22 2.5 16.5v-9L12 2Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M12 22v-9.5M12 12.5 2.5 7.5M12 12.5l9.5-5" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" opacity=".55"/></svg>
     <b>Blender for Android</b>
   </a>
+  <nav class="cnav"><a href="updates/index.html">Log</a><a href="about/index.html">About</a></nav>
   <div class="flag">Unofficial build <i>&nbsp;/ not affiliated with the Blender Foundation</i></div>
 </div>
+
 
 <header class="hero" id="top">
   <div class="field" id="field"><canvas id="cv" aria-hidden="true"></canvas></div>
@@ -303,36 +35,24 @@ footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clam
       </ul>
       <div>
         <h1 class="headline">Blender<br>on<br><span class="thin">Android</span></h1>
-        <p class="standfirst">
-          5.3.0 Alpha &middot; unofficial community port &middot; experimental<br>
-          <b>Not affiliated with or endorsed by the Blender Foundation</b>
-        </p>
+        <p class="standfirst">5.3.0 Alpha - unofficial community port - experimental<br><b>Not affiliated with or endorsed by the Blender Foundation</b></p>
         <div class="actions">
-          <a class="btn btn--primary" href="#download">Download
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-          <a class="btn btn--ghost" href="#builds">Compare the two builds
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+          <a class="btn btn--primary" href="#download">Download <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn" href="#builds">Compare the two builds <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+          <a class="btn" href="#updates">What's new <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-        <div class="readout">
-          <div>Architecture<b>arm64 only</b></div>
-          <div>Android<b>12 or newer</b></div>
-          <div>Graphics<b>Vulkan, no fallback</b></div>
-        </div>
+        <div class="readout"><div>Architecture<b>arm64 only</b></div><div>Android<b>12 or newer</b></div><div>Graphics<b>Vulkan, no fallback</b></div></div>
       </div>
     </div>
   </div>
   <div class="scrollcue">Scroll</div>
 </header>
-
 <main>
-
 <section id="device" class="checks">
   <div class="wrap">
     <div class="shead reveal">
       <h2>Will it run<br>on your device</h2>
-      <p>There is no OpenGL fallback and no 32-bit build. All three have to be true before a 272&nbsp;MB download is worth starting. Check them against your own phone.</p>
+      <p>There is no OpenGL fallback and no 32-bit build. All three have to be true before a large download is worth starting. Check them against your own phone.</p>
     </div>
     <div class="check reveal">
       <div class="check-item">
@@ -371,41 +91,20 @@ footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clam
       <p>The second is a fork of the first. They make opposite trades, and neither is the better one. Pick the trade that matches your device.</p>
     </div>
     <div class="tracks reveal">
-
       <article class="track">
         <h3>Wide support</h3>
-        <div class="who">simfeo / blender &middot; alpha 3</div>
+        <div class="who">simfeo/blender &middot; android-alpha-3</div>
         <p class="lede">The upstream port. Optimises for stability and for running on as many devices as possible, and ships in two sizes so weaker hardware is not left out.</p>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>ARM Mali devices now run.</b> Three GPU features Blender required and mostly never used were dropped in alpha 3.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Full and Lite.</b> Lite drops Cycles, video and the exchange formats for devices that cannot carry them.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A startup log you can send.</b> Written to <code>Download/blender-startup.log</code> even when the app closes immediately.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tested on Galaxy Tab S7 FE, Galaxy S22 Ultra and a Mali-G57 MC2.</span></li>
-        </ul>
-        <div class="foot">
-          <div class="stat">Latest<b>7 Sep 2026</b></div>
-          <div class="stat">Sizes<b>193 / 272 MB</b></div>
-          <div class="stat">Downloads<b>1,211</b></div>
-        </div>
+        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>ARM Mali devices now run.</b> Three GPU features Blender required and mostly never used were dropped in alpha 3.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Full and Lite.</b> Lite drops Cycles, video and the exchange formats for devices that cannot carry them.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A startup log you can send.</b> Written even when the app closes immediately, so a failure leaves something behind.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tested on Galaxy Tab S7 FE, Galaxy S22 Ultra and a Mali-G57 MC2.</span></li></ul>
+        <div class="foot"><div class="stat">Latest<b>7 Sep 2026</b></div><div class="stat">Sizes<b>193 / 272 MB</b></div><div class="stat">Downloads<b>1,213</b></div></div>
       </article>
-
       <article class="track">
         <h3>Everything on</h3>
-        <div class="who">Wanderson-Magalhaes / blender_for_android &middot; alpha 2</div>
+        <div class="who">Wanderson-Magalhaes/blender_for_android &middot; v5.3.0-alpha.2-android.20260901</div>
         <p class="lede">A fork of the upstream port that enables as much as it can and tunes the touch interface for one device. Developed and tested on a Galaxy S24 Ultra only.</p>
-        <ul>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Native audio.</b> Timeline audio, sound strips and speaker objects play through the phone or headphones.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Tool variants on long press.</b> Hold a tool to reach Select Box, Circle, Lasso and the rest of its group.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Phone-sized chrome.</b> Menus, headers, toolbars and the properties column are enlarged for fingers.</span></li>
-          <li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Not validated on any other device, chipset, Android version or GPU driver.</span></li>
-        </ul>
-        <div class="foot">
-          <div class="stat">Latest<b>1 Sep 2026</b></div>
-          <div class="stat">Size<b>232 MB</b></div>
-          <div class="stat">Downloads<b>1,102</b></div>
-        </div>
+        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Native audio.</b> Timeline audio, sound strips and speaker objects play through the phone or headphones.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Tool variants on long press.</b> Hold a tool to reach Select Box, Circle, Lasso and the rest of its group.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Phone-sized chrome.</b> Menus, headers, toolbars and the properties column are enlarged for fingers.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Not validated on any other device, chipset, Android version or GPU driver.</span></li></ul>
+        <div class="foot"><div class="stat">Latest<b>1 Sep 2026</b></div><div class="stat">Size<b>232 MB</b></div><div class="stat">Downloads<b>1,105</b></div></div>
       </article>
-
     </div>
   </div>
 </section>
@@ -416,61 +115,39 @@ footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clam
       <h2>Download</h2>
       <p>Start with Lite unless you specifically need Cycles, video or the exchange formats. It is the one to use on mid-range hardware.</p>
     </div>
-
     <div class="files reveal">
       <div class="file">
         <div>
           <div class="nm">blender-lite.apk</div>
-          <div class="meta"><span>Wide support</span><span>alpha 3</span><span><b>192.8 MiB</b></span><span>7 Sep 2026</span><span>481 downloads</span></div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-3</span><span><b>192.8 MiB</b></span><span>7 Sep 2026</span><span>7 downloads</span></div>
         </div>
-        <a class="btn btn--primary" href="https://github.com/simfeo/blender/releases/tag/android-alpha-3">Get Lite
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
-        <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
-      </div>
-      <div class="file">
-        <div>
-          <div class="nm">blender-full.apk</div>
-          <div class="meta"><span>Wide support</span><span>alpha 3</span><span><b>271.8 MiB</b></span><span>7 Sep 2026</span><span>730 downloads</span></div>
-        </div>
-        <a class="btn" href="https://github.com/simfeo/blender/releases/tag/android-alpha-3">Get Full
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        <a class="btn btn--primary" href="https://github.com/simfeo/blender/releases/download/android-alpha-3/blender-lite.apk">Get Lite <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
       </div>
       <div class="file">
         <div>
           <div class="nm">blender-full-20260901-085245.apk</div>
-          <div class="meta"><span>Everything on</span><span>alpha 2</span><span><b>231.8 MiB</b></span><span>1 Sep 2026</span><span>419 downloads</span></div>
+          <div class="meta"><span>Everything on</span><span>v5.3.0-alpha.2-android.20260901</span><span><b>231.8 MiB</b></span><span>1 Sep 2026</span><span>422 downloads</span></div>
         </div>
-        <a class="btn" href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases/tag/v5.3.0-alpha.2-android.20260901">Get S24 build
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </a>
+        <a class="btn" href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases/download/v5.3.0-alpha.2-android.20260901/blender-full-20260901-085245.apk">Get Full <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="hash"><b>SHA-256</b>e50b277b19f65a6c1bfee34f21530eb5195b425b5180eabdcd0a07550e4f9e33</div>
       </div>
+      <div class="file">
+        <div>
+          <div class="nm">blender-full.apk</div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-3</span><span><b>271.8 MiB</b></span><span>7 Sep 2026</span><span>19 downloads</span></div>
+        </div>
+        <a class="btn" href="https://github.com/simfeo/blender/releases/download/android-alpha-3/blender-full.apk">Get Full <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
+      </div>
     </div>
-
-    <h3 style="margin:clamp(52px,7vh,84px) 0 clamp(22px,3vh,32px);font:600 12px/1 var(--mono);letter-spacing:var(--track);text-transform:uppercase;color:var(--text-faint)">Installing</h3>
-    <ol class="steps reveal">
-      <li>
-        <h4>Allow the install</h4>
-        <p>These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager.</p>
-      </li>
-      <li>
-        <h4>Check the certificate</h4>
-        <p>The upstream APKs are signed by the author. Alpha 3 uses the same key as alpha 2, so it installs over it as an update and keeps your preferences.</p>
-      </li>
-      <li>
-        <h4>Wait out the first launch</h4>
-        <p>Around 100&nbsp;MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen.</p>
-      </li>
-    </ol>
-
-    <div class="notice reveal" style="margin-top:clamp(34px,4vh,50px)">
-      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <h3 class="minor">Installing</h3>
+    <ol class="steps reveal"><li><h4>Allow the install</h4><p>These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager.</p></li><li><h4>Check the certificate</h4><p>The upstream APKs are signed by the author. Alpha 3 uses the same key as alpha 2, so it installs over it as an update and keeps your preferences.</p></li><li><h4>Wait out the first launch</h4><p>Around 100 MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen.</p></li></ol>
+    <div class="notice reveal">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       <div>
         <h3>Signing certificate, upstream builds</h3>
-        <p style="font:400 12px/1.8 var(--mono);letter-spacing:.02em;word-break:break-all;color:var(--text-dim)">f8b590dac5a14b530936d8b68be05a77e60bb0a2e652d9d8d079d9c93cc0cc3b</p>
+        <p class="fingerprint">f8b590dac5a14b530936d8b68be05a77e60bb0a2e652d9d8d079d9c93cc0cc3b</p>
         <p>This is an alpha. Back up your work. Auto-save now functions, so after an unexpected close use File, then Recover, then Auto Save.</p>
       </div>
     </div>
@@ -484,229 +161,44 @@ footer{border-top:1px solid var(--rule-soft);padding:clamp(48px,7vh,80px) 0 clam
       <p>What changed, why it was broken, and what is still known to be wrong. Written as the work happens.</p>
     </div>
     <div class="feed">
-
+      <article class="entry reveal">
+        <div class="when">9 Sep 2026<span class="tag nw">Announcement</span></div>
+        <div>
+          <h3><a href="updates/2026-09-09-news-where-this-project-is-going-next/index.html">Where this project is going next</a></h3>
+          <p>A short note on what the port is working towards, written to prove that an announcement needs no GitHub release behind it.</p>
+          <a class="more" href="updates/2026-09-09-news-where-this-project-is-going-next/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </article>
       <article class="entry reveal">
         <div class="when">7 Sep 2026<b>android-alpha-3</b><span class="tag up">Wide support</span></div>
         <div>
-          <h3>Devices with ARM Mali graphics now run</h3>
-          <p>Blender required three GPU features that ARM's Mali driver does not provide, and <strong>never used two of them</strong>. Every device with Mali graphics was turned away before anything could appear on screen, and turned away in silence, because the reason was only written to a log a developer would need a cable to read.</p>
-          <p>Dual source blending and vertex stage stores are gone entirely. Clip distance is used only by the viewport clipping region, so dropping it costs that one feature rather than the renderer. Tested on a Mali-G57 MC2 with ARM's r32p1 driver. If an earlier build started and then closed itself, or never drew anything, this one is worth another try.</p>
-          <a class="more" href="https://github.com/simfeo/blender/releases/tag/android-alpha-3">Read the full notes
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+          <h3><a href="updates/2026-09-07-main-android-alpha-3/index.html">Devices with ARM Mali graphics now run</a></h3>
+          <p>Blender required three GPU features ARM's Mali driver does not provide, and never used two of them. Every Mali device was turned away in silence before anything reached the screen. If an earlier build refused to start, try this one.</p>
+          <a class="more" href="updates/2026-09-07-main-android-alpha-3/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </article>
-
-      <article class="entry reveal">
-        <div class="when">1 Sep 2026<b>alpha.2-android</b><span class="tag dn">Everything on</span></div>
-        <div>
-          <h3>Native audio, and a toolbar built for thumbs</h3>
-          <p>Timeline audio, sound strips and speaker objects now play through the phone, wired headphones or whatever Android's current output is. Audio is in the Full build only. If the route changes while Blender is running, playback may stay stopped until the audio device is reopened; automatic recovery is not implemented yet.</p>
-          <p>Holding a tool opens its variants, editor borders are easier to grab with a finger, and closed side panels are easier to reopen and resize. Menus, headers, toolbars and the properties tab column are all larger for touch.</p>
-          <a class="more" href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases/tag/v5.3.0-alpha.2-android.20260901">Read the full notes
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </article>
-
       <article class="entry reveal">
         <div class="when">6 Sep 2026<b>android-alpha-2</b><span class="tag up">Wide support</span></div>
         <div>
-          <h3>The port stopped building its own dependencies</h3>
-          <p>It now takes the prebuilt Android library set published by the Blender project, the same way every other platform consumes its <strong>lib/&lt;platform&gt;</strong> set. That single change is what made the rest of this release possible.</p>
-          <p>Video is back through ffmpeg. Cycles denoising, fluid and smoke simulation, the Ocean modifier, path guiding, exact and manifold booleans, motion tracking, Draco glTF and PDF export all arrived with it. So did the missing content: the essentials asset library, which is where every brush comes from, 49 interface languages, and online extensions with pip.</p>
-          <a class="more" href="https://github.com/simfeo/blender/releases/tag/android-alpha-2">Read the full notes
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
+          <h3><a href="updates/2026-09-06-main-android-alpha-2/index.html">The port stopped building its own dependencies</a></h3>
+          <p>It now takes the prebuilt Android library set published by the Blender project. That single change is what brought back video, Cycles denoising, simulation, the exchange formats, 49 languages and every missing brush.</p>
+          <a class="more" href="updates/2026-09-06-main-android-alpha-2/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-      </article>
-
-      <article class="entry reveal">
-        <div class="when">25 Aug 2026<b>alpha-android</b><span class="tag dn">Everything on</span></div>
-        <div>
-          <h3>The fork opens, on one device</h3>
-          <p>An experimental Blender 5.3 Alpha port shared for testing, study and development feedback, continuing the original Android work. Full profile, arm64-v8a, target SDK 34, package <strong>org.blender.blender</strong>.</p>
-          <p>Validated on a Samsung Galaxy S24 Ultra and nothing else. Touch, keyboard, mouse, stylus and window management should all be treated as experimental.</p>
-          <a class="more" href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases/tag/v5.3.0-alpha-android.20260825">Read the full notes
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </article>
-
-      <article class="entry reveal">
-        <div class="when">7 Aug 2026<b>android-alpha-1</b><span class="tag up">Wide support</span></div>
-        <div>
-          <h3>It runs, and it renders</h3>
-          <p>The first public build. Blender 5.3.0 Alpha on arm64 with a Vulkan driver, in two profiles, with S Pen support. On a Galaxy S22 Ultra the Full build peaked at about <strong>1.9 GB resident</strong>.</p>
-          <a class="more" href="https://github.com/simfeo/blender/releases/tag/android-alpha-1">Read the full notes
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </a>
-        </div>
-      </article>
-
-    </div>
+      </article></div>
+    <a class="btn allupdates" href="updates/index.html">All 6 updates <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>
 </section>
-
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="fgrid">
-      <div class="fcol">
-        <h4>Wide support</h4>
-        <a href="https://github.com/simfeo/blender/releases">Releases</a>
-        <a href="https://github.com/simfeo/blender">Source</a>
-      </div>
-      <div class="fcol">
-        <h4>Everything on</h4>
-        <a href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases">Releases</a>
-        <a href="https://github.com/Wanderson-Magalhaes/blender_for_android">Source</a>
-      </div>
-      <div class="fcol">
-        <h4>Blender</h4>
-        <a href="https://www.blender.org">blender.org</a>
-        <a href="https://projects.blender.org">Upstream development</a>
-      </div>
-    </div>
+    <div class="fgrid"><div class="fcol"><h2>Wide support</h2><a href="https://github.com/simfeo/blender/releases">Releases</a><a href="https://github.com/simfeo/blender">Source</a></div><div class="fcol"><h2>Everything on</h2><a href="https://github.com/Wanderson-Magalhaes/blender_for_android/releases">Releases</a><a href="https://github.com/Wanderson-Magalhaes/blender_for_android">Source</a></div><div class="fcol"><h2>This site</h2><a href="updates/index.html">Porting log</a><a href="index.html#download">Downloads</a><a href="about/index.html">About</a></div><div class="fcol"><h2>Blender</h2><a href="https://www.blender.org">blender.org</a><a href="https://projects.blender.org">Upstream development</a></div></div>
     <div class="fbot">
-      <span>Unofficial community port &middot; not affiliated with or endorsed by the Blender Foundation</span>
+      <span>Not affiliated with or endorsed by the Blender Foundation</span>
       <span>Blender is released under the GNU GPL</span>
     </div>
   </div>
 </footer>
-
-<script>
-(function(){
-  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  /* scroll reveal: opt in only when we can guarantee we can undo it */
-  var nodes = [].slice.call(document.querySelectorAll('.reveal'));
-  function showAll(){ nodes.forEach(function(n){ n.classList.add('in'); }); }
-  if ('IntersectionObserver' in window && !reduce){
-    document.documentElement.classList.add('js-reveal');
-    var io = new IntersectionObserver(function(es){
-      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-    },{rootMargin:'0px 0px -10% 0px'});
-    nodes.forEach(function(n){ io.observe(n); });
-    /* failsafe: nothing stays hidden because an observer never fired */
-    setTimeout(showAll, 2500);
-    addEventListener('beforeprint', showAll);
-  }
-
-  /* signature interaction: the field */
-  if (reduce) return;
-  var cv = document.getElementById('cv');
-  var gl = cv.getContext('webgl',{antialias:false,alpha:true,powerPreference:'low-power'});
-  if (!gl) return;
-
-  var VS = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-  var FS = [
-  'precision highp float;',
-  'uniform vec2 R;uniform float T;uniform vec2 M;uniform float E;',
-  'float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}',
-  'float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);',
-  ' return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}',
-  'float fbm(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p*=2.03;a*=.5;}return v;}',
-  'void main(){',
-  ' vec2 uv=gl_FragCoord.xy/R.xy;',
-  ' vec2 q=uv;q.x*=R.x/R.y;',
-  ' vec2 md=(M-.5)*vec2(R.x/R.y,1.);',
-  ' float d=length(q-md-vec2(.5*R.x/R.y,.5));',
-  ' float warp=.32/(1.+d*7.);',
-  ' float t=T*.016;',
-  ' vec2 f=q*1.45+vec2(t,-t*.6);',
-  ' f+=warp*vec2(cos(d*5.-T*.16),sin(d*5.-T*.16));',
-  ' float a=fbm(f);',
-  ' float b=fbm(f*1.8+vec2(a*1.2,-a*.9)+vec2(0.,t*1.2));',
-  ' float ridge=abs(b-.5)*2.;',
-  ' float streams=pow(1.-ridge,5.5);',
-  ' float haze=smoothstep(.30,.78,b);',
-  /* deep ground that breathes, lilac carried mostly as haze */
-  ' vec3 col=mix(vec3(.028,.034,.072),vec3(.062,.070,.150),a);',
-  ' col+=vec3(.286,.290,.965)*haze*.30*smoothstep(1.15,.30,uv.x+uv.y*.30);',
-  ' col+=vec3(.42,.46,1.)*streams*.16*smoothstep(1.05,.35,uv.x+uv.y*.30);',
-  /* ember pole, lower right, lifted by E */
-  ' float pole=smoothstep(.80,.06,length((uv-vec2(.93,.12))*vec2(1.30,1.15)));',
-  ' col*=1.-pole*.42;',
-  ' col+=vec3(1.,.400,.220)*pole*(.34+E*.46)*(.70+streams*.45);',
-  /* dark corner where the type sits */
-  ' col*=mix(.42,1.,smoothstep(.0,.95,uv.x*.75+uv.y*.55));',
-  /* film grain */
-  ' col+=(h(gl_FragCoord.xy+fract(T)*97.)-.5)*.045;',
-  ' gl_FragColor=vec4(col,1.);',
-  '}'].join('\n');
-
-  function sh(t,s){var o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);
-    return gl.getShaderParameter(o,gl.COMPILE_STATUS)?o:null;}
-  var vs=sh(gl.VERTEX_SHADER,VS), fs=sh(gl.FRAGMENT_SHADER,FS);
-  if(!vs||!fs) return;
-  var pr=gl.createProgram();gl.attachShader(pr,vs);gl.attachShader(pr,fs);gl.linkProgram(pr);
-  if(!gl.getProgramParameter(pr,gl.LINK_STATUS)) return;
-  gl.useProgram(pr);
-
-  var buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
-  gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
-  var loc=gl.getAttribLocation(pr,'p');gl.enableVertexAttribArray(loc);
-  gl.vertexAttribPointer(loc,2,gl.FLOAT,false,0,0);
-
-  var uR=gl.getUniformLocation(pr,'R'),uT=gl.getUniformLocation(pr,'T'),
-      uM=gl.getUniformLocation(pr,'M'),uE=gl.getUniformLocation(pr,'E');
-
-  var host=document.getElementById('field'), mx=.62,my=.5,tx=.62,ty=.5,ember=0,tEmber=0,vis=true;
-
-  function size(){
-    var dpr=Math.min(window.devicePixelRatio||1,1.75);
-    var w=host.clientWidth,hh=host.clientHeight;
-    cv.width=Math.round(w*dpr);cv.height=Math.round(hh*dpr);
-    gl.viewport(0,0,cv.width,cv.height);
-  }
-  size();
-  addEventListener('resize',size,{passive:true});
-
-  addEventListener('pointermove',function(e){
-    var r=host.getBoundingClientRect();
-    if(e.clientY>r.bottom) return;
-    tx=e.clientX/r.width; ty=1-e.clientY/r.height;
-  },{passive:true});
-
-  addEventListener('deviceorientation',function(e){
-    if(e.gamma==null) return;
-    tx=.5+Math.max(-1,Math.min(1,e.gamma/45))*.42;
-    ty=.5+Math.max(-1,Math.min(1,(e.beta-45)/45))*.32;
-  },{passive:true});
-
-  document.querySelectorAll('.btn--primary').forEach(function(b){
-    b.addEventListener('pointerenter',function(){tEmber=1;});
-    b.addEventListener('pointerleave',function(){tEmber=0;});
-    b.addEventListener('focus',function(){tEmber=1;});
-    b.addEventListener('blur',function(){tEmber=0;});
-  });
-
-  var t0=performance.now(), raf=0;
-
-  function frame(now){
-    raf=requestAnimationFrame(frame);
-    mx+=(tx-mx)*.045; my+=(ty-my)*.045; ember+=(tEmber-ember)*.07;
-    gl.uniform2f(uR,cv.width,cv.height);
-    gl.uniform1f(uT,(now-t0)/1000);
-    gl.uniform2f(uM,mx,my);
-    gl.uniform1f(uE,ember);
-    gl.drawArrays(gl.TRIANGLES,0,3);
-  }
-  /* the field costs GPU on a phone, so it only runs while it is actually on screen */
-  function run(on){
-    if(on && !raf){ raf=requestAnimationFrame(frame); }
-    else if(!on && raf){ cancelAnimationFrame(raf); raf=0; }
-  }
-  new IntersectionObserver(function(e){
-    vis=e[0].isIntersecting; run(vis && !document.hidden);
-  },{threshold:0}).observe(host);
-  document.addEventListener('visibilitychange',function(){ run(vis && !document.hidden); });
-
-  raf=requestAnimationFrame(frame);
-  host.classList.add('on');
-})();
-</script>
+<script src="assets/field.js" defer></script>
 </body>
 </html>
