@@ -563,6 +563,7 @@ def rel(depth, path):
 
 def shell(site, depth, title, description, body, extra_class=""):
     css = rel(depth, "assets/site.css")
+    icon = rel(depth, "assets/favicon.svg")
     js = rel(depth, "assets/field.js")
     home = rel(depth, "index.html") if depth else "#top"
     cls = ' class="%s"' % extra_class if extra_class else ""
@@ -573,6 +574,7 @@ def shell(site, depth, title, description, body, extra_class=""):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>%(title)s</title>
 <meta name="description" content="%(desc)s">
+<link rel="icon" href="%(icon)s" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=Martian+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -608,6 +610,7 @@ def shell(site, depth, title, description, body, extra_class=""):
         "title": _esc(title),
         "desc": html.escape(description, quote=True),
         "css": css,
+        "icon": icon,
         "js": js,
         "home": home,
         "note": GENERATED_NOTE,
