@@ -73,7 +73,7 @@
         <input type="checkbox" id="req-vk">
         <label for="req-vk">
           <span class="box"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <span><span class="t">A Vulkan driver</span><span class="d">Adreno, Mali and Xclipse all work as of alpha 3. There is no OpenGL path, so a device without Vulkan cannot start the app at all.</span></span>
+          <span><span class="t">A Vulkan driver</span><span class="d">Adreno, Mali and Xclipse all start as of alpha 3. Older Mali drivers draw stray triangles in alpha 4. There is no OpenGL path, so a device without Vulkan cannot start the app at all.</span></span>
         </label>
       </div>
     </div>
@@ -93,16 +93,16 @@
     <div class="tracks reveal">
       <article class="track">
         <h3>Wide support</h3>
-        <div class="who">simfeo/blender &middot; android-alpha-3</div>
+        <div class="who">simfeo/blender &middot; android-alpha-4</div>
         <p class="lede">The upstream port. Optimises for stability and for running on as many devices as possible, and ships in two sizes so weaker hardware is not left out.</p>
-        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>ARM Mali devices now run.</b> Three GPU features Blender required and mostly never used were dropped in alpha 3.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Full and Lite.</b> Lite drops Cycles, video and the exchange formats for devices that cannot carry them.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A startup log you can send.</b> Written even when the app closes immediately, so a failure leaves something behind.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tested on Galaxy Tab S7 FE, Galaxy S22 Ultra and a Mali-G57 MC2.</span></li></ul>
-        <div class="foot"><div class="stat">Latest<b>7 Sep 2026</b></div><div class="stat">Sizes<b>193 / 272 MB</b></div><div class="stat">Downloads<b>1,213</b></div></div>
+        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Full and Lite, each also with Turnip.</b> Lite drops Cycles, video and the exchange formats. The Turnip builds carry Mesa's open Adreno driver.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Sound and working Cycles.</b> AAudio playback that follows headphones, denoising, and correct Principled BSDF lighting in alpha 4.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>A startup log you can send.</b> Written even when the app closes immediately, so a failure leaves something behind.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Tested on Galaxy Tab S7 FE, Galaxy S22 Ultra and a Mali-G57 MC2.</span></li></ul>
+        <div class="foot"><div class="stat">Latest<b>26 Sep 2026</b></div><div class="stat">Sizes<b>194 / 196 / 273 / 276 MB</b></div><div class="stat">Downloads<b>1,213</b></div></div>
       </article>
       <article class="track">
         <h3>Everything on</h3>
         <div class="who">Wanderson-Magalhaes/blender_for_android &middot; v5.3.0-alpha.2-android.20260901</div>
         <p class="lede">A fork of the upstream port that enables as much as it can and tunes the touch interface for one device. Developed and tested on a Galaxy S24 Ultra only.</p>
-        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Native audio.</b> Timeline audio, sound strips and speaker objects play through the phone or headphones.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Tool variants on long press.</b> Hold a tool to reach Select Box, Circle, Lasso and the rest of its group.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Phone-sized chrome.</b> Menus, headers, toolbars and the properties column are enlarged for fingers.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Not validated on any other device, chipset, Android version or GPU driver.</span></li></ul>
+        <ul><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Native audio.</b> Timeline audio, sound strips and speaker objects play through the phone or headphones.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Tool variants on long press.</b> Hold a tool to reach Select Box, Circle, Lasso and the rest of its group.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12.5 9.5 18 20 6.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Phone-sized chrome.</b> Menus, headers, toolbars and the properties column are enlarged for fingers.</span></li><li><svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span>Made for the S24 Ultra and its Adreno 750. It may help on other devices, but Wide support covers far more of them.</span></li></ul>
         <div class="foot"><div class="stat">Latest<b>1 Sep 2026</b></div><div class="stat">Size<b>232 MB</b></div><div class="stat">Downloads<b>1,105</b></div></div>
       </article>
     </div>
@@ -119,9 +119,17 @@
       <div class="file">
         <div>
           <div class="nm">blender-lite.apk</div>
-          <div class="meta"><span>Wide support</span><span>android-alpha-3</span><span><b>192.8 MiB</b></span><span>7 Sep 2026</span><span>7 downloads</span></div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-4</span><span><b>193.8 MiB</b></span><span>26 Sep 2026</span></div>
         </div>
-        <a class="btn btn--primary" href="https://github.com/simfeo/blender/releases/download/android-alpha-3/blender-lite.apk">Get Lite <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn btn--primary" href="https://github.com/simfeo/blender/releases/download/android-alpha-4/blender-lite.apk">Get Lite <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
+      </div>
+      <div class="file">
+        <div>
+          <div class="nm">blender-lite-turnip.apk</div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-4</span><span><b>196.3 MiB</b></span><span>26 Sep 2026</span></div>
+        </div>
+        <a class="btn" href="https://github.com/simfeo/blender/releases/download/android-alpha-4/blender-lite-turnip.apk">Get Lite, Turnip <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
       </div>
       <div class="file">
@@ -135,14 +143,22 @@
       <div class="file">
         <div>
           <div class="nm">blender-full.apk</div>
-          <div class="meta"><span>Wide support</span><span>android-alpha-3</span><span><b>271.8 MiB</b></span><span>7 Sep 2026</span><span>19 downloads</span></div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-4</span><span><b>273.3 MiB</b></span><span>26 Sep 2026</span></div>
         </div>
-        <a class="btn" href="https://github.com/simfeo/blender/releases/download/android-alpha-3/blender-full.apk">Get Full <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <a class="btn" href="https://github.com/simfeo/blender/releases/download/android-alpha-4/blender-full.apk">Get Full <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
+      </div>
+      <div class="file">
+        <div>
+          <div class="nm">blender-full-turnip.apk</div>
+          <div class="meta"><span>Wide support</span><span>android-alpha-4</span><span><b>275.8 MiB</b></span><span>26 Sep 2026</span></div>
+        </div>
+        <a class="btn" href="https://github.com/simfeo/blender/releases/download/android-alpha-4/blender-full-turnip.apk">Get Full, Turnip <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3v13m0 0 5-5m-5 5-5-5M4 21h16" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         <div class="hash none"><b>SHA-256</b>not published for this release &mdash; verify the signing certificate below instead</div>
       </div>
     </div>
     <h3 class="minor">Installing</h3>
-    <ol class="steps reveal"><li><h4>Allow the install</h4><p>These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager.</p></li><li><h4>Check the certificate</h4><p>The upstream APKs are signed by the author. Alpha 3 uses the same key as alpha 2, so it installs over it as an update and keeps your preferences.</p></li><li><h4>Wait out the first launch</h4><p>Around 100 MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen.</p></li></ol>
+    <ol class="steps reveal"><li><h4>Allow the install</h4><p>These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager.</p></li><li><h4>Check the certificate</h4><p>The upstream APKs are signed by the author. Alpha 4 uses the same key as alpha 3, so it installs over it as an update and keeps your preferences.</p></li><li><h4>Wait out the first launch</h4><p>Around 100 MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen.</p></li></ol>
     <div class="notice reveal">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 3.5 21 19H3l9-15.5Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M12 10v4m0 2.6v.2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
       <div>
@@ -162,6 +178,14 @@
     </div>
     <div class="feed">
       <article class="entry reveal">
+        <div class="when">26 Sep 2026<b>android-alpha-4</b><span class="tag up">Wide support</span></div>
+        <div>
+          <h3><a href="updates/2026-09-26-main-android-alpha-4/index.html">Sound, working Cycles lighting, and a Turnip driver for Adreno</a></h3>
+          <p>Audio through AAudio, Cycles denoising, and Principled BSDF materials that no longer render almost black. Two new Turnip builds carry Mesa's open Adreno driver, and the Wanderson Magalhaes touch and keyboard work is ported in.</p>
+          <a class="more" href="updates/2026-09-26-main-android-alpha-4/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+        </div>
+      </article>
+      <article class="entry reveal">
         <div class="when">7 Sep 2026<b>android-alpha-3</b><span class="tag up">Wide support</span></div>
         <div>
           <h3><a href="updates/2026-09-07-main-android-alpha-3/index.html">Devices with ARM Mali graphics now run</a></h3>
@@ -176,16 +200,8 @@
           <p>It now takes the prebuilt Android library set published by the Blender project. That single change is what brought back video, Cycles denoising, simulation, the exchange formats, 49 languages and every missing brush.</p>
           <a class="more" href="updates/2026-09-06-main-android-alpha-2/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
-      </article>
-      <article class="entry reveal">
-        <div class="when">1 Sep 2026<b>v5.3.0-alpha.2-android.20260901</b><span class="tag dn">Everything on</span></div>
-        <div>
-          <h3><a href="updates/2026-09-01-s24-v5-3-0-alpha-2-android-20260901/index.html">Native audio, and a toolbar built for thumbs</a></h3>
-          <p>Timeline audio, sound strips and speaker objects now play through the phone or headphones, in the Full build only. Holding a tool opens its variants, and the whole interface grew for fingers.</p>
-          <a class="more" href="updates/2026-09-01-s24-v5-3-0-alpha-2-android-20260901/index.html">Read this update <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
-        </div>
       </article></div>
-    <a class="btn allupdates" href="updates/index.html">All 5 updates <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="btn allupdates" href="updates/index.html">All 6 updates <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12h15m0 0-5.5-5.5M19 12l-5.5 5.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
   </div>
 </section>
 </main>

@@ -53,13 +53,13 @@ requirements:
     label: Graphics
     value: "Vulkan, no fallback"
     check: A Vulkan driver
-    detail: "Adreno, Mali and Xclipse all work as of alpha 3. There is no OpenGL path, so a device without Vulkan cannot start the app at all."
+    detail: "Adreno, Mali and Xclipse all start as of alpha 3. Older Mali drivers draw stray triangles in alpha 4. There is no OpenGL path, so a device without Vulkan cannot start the app at all."
 
 install_steps:
   - title: Allow the install
     text: "These do not come from Google Play, so Android will ask you to permit installation from an unknown source. Grant it to your browser or file manager."
   - title: Check the certificate
-    text: "The upstream APKs are signed by the author. Alpha 3 uses the same key as alpha 2, so it installs over it as an update and keeps your preferences."
+    text: "The upstream APKs are signed by the author. Alpha 4 uses the same key as alpha 3, so it installs over it as an update and keeps your preferences."
   - title: Wait out the first launch
     text: "Around 100 MB of runtime data unpacks once per install, showing only the splash screen. It is not frozen."
 
@@ -74,10 +74,10 @@ tracks:
       devices as possible, and ships in two sizes so weaker hardware is not
       left out.
     points:
-      - lead: ARM Mali devices now run.
-        text: Three GPU features Blender required and mostly never used were dropped in alpha 3.
-      - lead: Full and Lite.
-        text: Lite drops Cycles, video and the exchange formats for devices that cannot carry them.
+      - lead: Full and Lite, each also with Turnip.
+        text: Lite drops Cycles, video and the exchange formats. The Turnip builds carry Mesa's open Adreno driver.
+      - lead: Sound and working Cycles.
+        text: AAudio playback that follows headphones, denoising, and correct Principled BSDF lighting in alpha 4.
       - lead: A startup log you can send.
         text: Written even when the app closes immediately, so a failure leaves something behind.
       - lead: ""
@@ -99,5 +99,5 @@ tracks:
       - lead: Phone-sized chrome.
         text: Menus, headers, toolbars and the properties column are enlarged for fingers.
       - lead: ""
-        text: Not validated on any other device, chipset, Android version or GPU driver.
+        text: Made for the S24 Ultra and its Adreno 750. It may help on other devices, but Wide support covers far more of them.
         warn: true
